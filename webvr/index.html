@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+</head>
+<body>
+  <a-scene>
+    <a-assets>
+      <img id="sky" src="img/sky.jpg">
+    </a-assets>
+
+    <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4cc3d9"></a-box>
+    <a-sphere position="0 1.25 -5" radius="1.25" color="#ef2d5e"></a-sphere>
+    <a-cylinder position="1 0.75 -3" radius="0.5" height="1.5" color="#ffc65d"></a-cylinder>
+    <a-sky id="image-360" radius="10" src="#sky"></a-sky>
+  </a-scene>
+</body>
+</html>

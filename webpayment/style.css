@@ -1,0 +1,34 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-size: 100%;
+  font-family: sans-serif;
+  line-height: 1;
+  background: #eee;
+  color: #666;
+}
+section {
+  padding: 20px;
+  margin: 0 auto;
+  width: 375px;
+}
+dl {
+  margin: 0 0 20px 0;
+  padding: 0 20px
+}
+dl dt {
+  padding: 15px 0;
+  border-bottom: solid 1px #ccc;
+}
+dl dd {
+  padding: 15px 0;
+  text-align: right;
+}
+button {
+  padding: 20px;
+  width: 100%;
+  background: #2bd58c;
+  font-weight: bold;
+  color: #fff;
+}

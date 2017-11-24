@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>web payment</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<section>
+  <img src="img/clova.png" alt="clova" width="375" height="375">
+  <dl>
+    <dt>Clova</dt>
+    <dd>期間限定特別価格 &yen; 12,800</dd>
+  </dl>
+  <button class="paymentBtn" type="button">Clovaを購入する</button>
+</section>
+<script>
+function clickPayment() {
+  /* PaymentRequestAPI に対応しているかどうか */
+  if (!window.PaymentRequest) {
+    return window.alert('PaymentRequestに対応していません')
+  }
+
+  /* 支払い方法 */
+  const supportedInstruments = [{
+      supportedMethods: ['basic-card'],
+      data: {
+        supportedNetworks: [
+          'visa', 'mastercard', 'amex', 'discover',
+          'diners', 'jcb', 'unionpay'
+        ]
+      }
+  }]
+
+  /* 支払い詳細 */
+  const details = {
+    displayItems: [{
+      label: '本体価格',
+      amount: { currency: 'JPY', value: '12800' }
+    }, {
+      label: '消費税',
+      amount: { currency: 'JPY', value: '0' }
+    }],
+    total: {
+      label: '合計価格',
+      amount: { currency: 'JPY', value : '12800' }
+    }
+  }
+
+  const request = new PaymentRequest(supportedInstruments, details)
+
+  request.show()
+  .then(result => {
+    /* どこか支払い処理してくれるAPIにPOSTする */
+    return fetch('/pay', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(result.toJSON())
+    }).then(response => {
+      if (response.status === 200) {
+        /* 支払い成功 */
+        return result.complete('success')
+      } else {
+        /* 支払い失敗 */
+        return result.complete('fail')
+      }
+    }).catch(() => {
+      /* 支払い失敗 */
+      return result.complete('fail')
+    })
+  })
+}
+document.querySelector('.paymentBtn').addEventListener('click', clickPayment)
+</script>
+</body>
+</html>

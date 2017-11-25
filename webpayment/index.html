@@ -23,18 +23,15 @@ function clickPayment() {
   }
 
   /* 支払い方法 */
-  const supportedInstruments = [{
+  const methodData = [{
       supportedMethods: ['basic-card'],
       data: {
-        supportedNetworks: [
-          'visa', 'mastercard', 'amex', 'discover',
-          'diners', 'jcb', 'unionpay'
-        ]
+        supportedNetworks: ['visa', 'mastercard', 'amex', 'discover','diners', 'jcb', 'unionpay']
       }
   }]
 
   /* 支払い詳細 */
-  const details = {
+  const detailParams = {
     displayItems: [{
       label: '本体価格',
       amount: { currency: 'JPY', value: '12800' }
@@ -48,7 +45,13 @@ function clickPayment() {
     }
   }
 
-  const request = new PaymentRequest(supportedInstruments, details)
+  /* 支払いオプション */
+  const options = {
+    requestShipping: true,
+    shippingType: "shipping"
+  }
+
+  const request = new PaymentRequest(methodData, detailParams, options)
 
   request.show()
   .then(result => {

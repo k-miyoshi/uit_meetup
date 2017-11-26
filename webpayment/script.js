@@ -1,5 +1,3 @@
-'use strict'
-
 function clickPayment() {
 
   /* PaymentRequestAPI に対応しているかどうか */
@@ -21,11 +19,11 @@ function clickPayment() {
       label: '本体価格',
       amount: { currency: 'JPY', value: '12800' }
     }, {
-      label: '消費税',
+      label: '配送料',
       amount: { currency: 'JPY', value: '0' }
     }],
     shippingOptions: [{
-      id: 'standrd',
+      id: 'standard',
       label: '通常配送',
       amount: { currency: 'JPY', value: '0' },
       selected: true
@@ -48,10 +46,31 @@ function clickPayment() {
 
   const request = new PaymentRequest(methodData, detailParams, options)
 
+  /* shippingOptions */
+  request.addEventListener('shippingoptionchange', e => {
+    e.updateWith(((detailParams, shippingOption) => {
+      if (shippingOption==='standard') {
+        /* なんでここの処理が人力なのか謎 */
+        detailParams.shippingOptions[0].selected = true
+        detailParams.shippingOptions[1].selected = false
+        detailParams.displayItems[1].amount.value = '0'
+
+        detailParams.total.amount.value = '12800'
+      } else {
+        detailParams.shippingOptions[0].selected = false
+        detailParams.shippingOptions[1].selected = true
+        detailParams.displayItems[1].amount.value = '500'
+
+        detailParams.total.amount.value = '13200'
+      }
+      return Promise.resolve(detailParams)
+    })(detailParams, request.shippingOption))
+  })
+
   request.show()
   .then(result => {
     /* どこか支払い処理してくれるAPIにPOSTする */
-    return fetch('/pay', {
+    return fetch('/', {
       method: 'POST',
       credentials: 'include',
       headers: {

@@ -46,7 +46,15 @@ function clickPayment() {
 
   const request = new PaymentRequest(methodData, detailParams, options)
 
-  /* shippingOptions */
+  /* 住所変更の地道な処理 */
+  request.addEventListener('shippingaddresschange', e => {
+    e.updateWith(((detailParams) => {
+      /* 自力でPromiseを解決しておかないとUIが死ぬ */
+      return Promise.resolve(detailParams)
+    })(detailParams))
+  })
+
+  /* 配送料変更の地道な処理 */
   request.addEventListener('shippingoptionchange', e => {
     e.updateWith(((detailParams, shippingOption) => {
       if (shippingOption==='standard') {
